@@ -10,31 +10,43 @@
 angular.module('angularJwtApp').factory('authToken', function ($window) {
     var storage = $window.localStorage;
     var cachedToken;
+    var userToken = 'userToken';
+    var authenticated;
 
-
-
-    return {
+    var authToken = {
       setToken: function(token) {
         cachedToken = token;
-        storage.setItem('userToken', token);
+        storage.setItem(userToken, token);
+        authenticated = true;
       },
       getToken: function() {
         if (!cachedToken) {
-          cachedToken = storage.getItem('userToken');
+          cachedToken = storage.getItem(userToken);
         }
         return cachedToken;
       },
       isAuthenticated: function() {
         if(!cachedToken) {
-          cachedToken = storage.getItem('userToken');
+          cachedToken = storage.getItem(userToken);
         }
 
         if (cachedToken) {
-          return true;
+          authenticated = true;
         }
+
         else {
-          return false;
+          authenticated = false;
         }
+
+        return authenticated;
+      },
+      removeToken: function () {
+        cachedToken = null;
+        storage.removeItem(userToken);
+        authenticated = false;
       }
+
     };
+
+  return authToken;
   });
