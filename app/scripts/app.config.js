@@ -25,6 +25,12 @@ angular
         url: '/logout',
         controller: 'LogoutCtrl'
       })
+
+      .state('connections', {
+        url: '/connections',
+        templateUrl: '/views/connections.html',
+        controller: 'ConnectionsCtrl'
+      })
   
   ;
   
