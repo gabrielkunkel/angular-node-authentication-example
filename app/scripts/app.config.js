@@ -4,7 +4,7 @@
 'use strict';
 
 angular
-  .module('angularJwtApp').config(function ($urlRouterProvider, $stateProvider) {
+  .module('angularJwtApp').config(function ($urlRouterProvider, $stateProvider, $httpProvider) {
 
     $urlRouterProvider.otherwise('/');
 
@@ -21,17 +21,23 @@ angular
         controller: 'RegisterCtrl'
       })
 
-      .state('logout', {
-        url: '/logout',
-        controller: 'LogoutCtrl'
-      })
-
       .state('connections', {
         url: '/connections',
         templateUrl: '/views/connections.html',
         controller: 'ConnectionsCtrl'
       })
+
+      .state('logout', {
+        url: '/logout',
+        controller: 'LogoutCtrl'
+      })
+
+    ;
+
+  $httpProvider.interceptors.push('authInterceptor');
   
-  ;
-  
-});
+})
+
+.constant('API_URL', 'http://localhost:3000/')
+
+;
