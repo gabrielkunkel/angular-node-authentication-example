@@ -11,9 +11,7 @@ angular.module('angularJwtApp')
   .controller('RegisterCtrl', function ($scope, $http, auth) {
     
     $scope.submit = function () {
-
       auth.register($scope.email, $scope.password);
-
     };
 
   });

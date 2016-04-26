@@ -27,3 +27,4 @@ lib-cov
 .lock-wscript
 build/Release
 node_modules
+.idea
