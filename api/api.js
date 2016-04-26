@@ -77,7 +77,13 @@ app.post('/register', function (req, res) {
 }); // end of register
 
 
-app.post('/login', function (req, res, next) {
+app.post('/login', passport.authenticate('local'), function (req, res) {
+     createSendToken(req.user, res);
+  });
+// end of login app.post
+
+
+/*app.post('/login', function (req, res, next) {
   passport.authenticate('local', function (err, user) {
     if(err) next(err);
 
@@ -88,7 +94,7 @@ app.post('/login', function (req, res, next) {
     })
 
   })(req, res, next);
-}); // end of login app.post
+}); // end of login app.post*/
 
 
 function createSendToken(user, res) {

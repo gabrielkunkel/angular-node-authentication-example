@@ -14,7 +14,7 @@ angular.module('angularJwtApp')
     function authSuccessful(res) {
       alert('success', 'Joy!', 'Welcome, ' + res.data.user.email + '.');
       authToken.setToken(res.data.token);
-      $state.go("connections");
+      $state.go('connections');
     }
 
     function authError(err) {
