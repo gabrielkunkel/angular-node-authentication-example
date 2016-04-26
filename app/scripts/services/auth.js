@@ -8,7 +8,7 @@
  * Service in the angularJwtApp.
  */
 angular.module('angularJwtApp')
-  .service('auth', function auth($http, API_URL, authToken) {
+  .service('auth', function auth($http, $state, alert, API_URL, authToken) {
     var url = API_URL + 'login';
 
     this.login = function (email, password) {
@@ -16,11 +16,16 @@ angular.module('angularJwtApp')
         email: email,
         password: password
       }).then(function (res) {
-        console.log(res.data.token);
+        alert('success', 'Welcome', 'Thanks for coming back' + res.data.user.email + '.');
         authToken.setToken(res.data.token);
+        $state.go('connections');
+      }).catch(function (err) {
+        alert('warning', 'Something went wrong', err.message);
       });
       
     };
+
+    
 
     // AngularJS will instantiate a singleton by calling "new" on this function
   });
