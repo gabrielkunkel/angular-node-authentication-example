@@ -7,11 +7,19 @@ var bodyParser = require("body-parser");
 var mongoose = require('mongoose');
 var User = require('./models/User.js');
 var jwt = require('jwt-simple');
+var passport = require('passport');
+var LocalStrategy = require('passport-local').Strategy;
 
 
 var app = express();
 
 app.use(bodyParser.json());
+app.use(passport.initialize());
+
+passport.serializeUser(function (user, done) {
+  done(null, user.id);
+
+});
 
 app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
@@ -21,6 +29,37 @@ app.use(function (req, res, next) {
   next();
 });
 
+var strategy = new LocalStrategy({
+  usernameField: 'email'
+}, function (email, password, done) {
+
+  var searchUser = {
+    email: email
+  };
+
+  User.findOne(searchUser, function (err, user) {
+    if (err) return done(err);
+
+    if (!user) return done(null, false, {
+      message: 'Wrong email/password'
+    });
+
+    user.comparePasswords(password, function (err, isMatch) {
+      if (err) return done(err);
+
+      if (!isMatch) return done(null, false, {
+        message: 'Wrong email/password'
+      });
+
+      return done(null, user);
+
+    });
+
+  })
+
+}); // end of new LocalStrategy
+
+passport.use(strategy);
 
 app.post('/register', function (req, res) {
 
@@ -38,31 +77,19 @@ app.post('/register', function (req, res) {
 }); // end of register
 
 
-app.post('/login', function (req, res) {
-  req.user = req.body;
+app.post('/login', function (req, res, next) {
+  passport.authenticate('local', function (err, user) {
+    if(err) next(err);
 
-  console.log('login: ' + req.user);
-  var searchUser = { email: req.user.email };
-
-  User.findOne(searchUser, function (err, user) {
-    if (err) throw err;
-
-    if (!user) {
-      return res.status(401).send({ message: 'Wrong email/password' });
-    }
-
-    user.comparePasswords(req.user.password, function (err, isMatch) {
-      if (err) throw err;
-
-      if (!isMatch)
-        return res.status(401).send({ message: 'Wrong email/password' });
+    req.login(user, function (err) {
+      if(err) next(err);
 
       createSendToken(user, res);
-    });
+    })
 
-  })
+  })(req, res, next);
+}); // end of login app.post
 
-}); // end of login
 
 function createSendToken(user, res) {
 
@@ -77,7 +104,6 @@ function createSendToken(user, res) {
       user: user.toJSON(),
       token: token
     });
-
 
 }
 
