@@ -18,7 +18,7 @@ angular.module('angularJwtApp')
     }
 
     function authError(err) {
-      alert('warning', 'Something went wrong: ', err.message);
+      alert('warning', 'Something went wrong: ' + err.message);
     }
 
     this.login = function (email, password) {
