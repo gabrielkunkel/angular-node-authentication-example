@@ -5,15 +5,15 @@
 var crypto = require("crypto");
 
 exports.encode = function (payload, secret) {
-  var algorithm = "HO256";
+  var algorithm = "HS256";
 
   var header = {
     typ: 'JWT',
     alg: algorithm
   };
 
-  var jwt = base64Encode(JSON.stringify(header)) + '.' + base64Encode(JSON.stringify(payload));
-  return jwt + "." + sign(jwt, secret);
+  var unsignedToken = base64Encode(JSON.stringify(header)) + '.' + base64Encode(JSON.stringify(payload));
+  return unsignedToken + "." + sign(unsignedToken, secret);
 
 };
 

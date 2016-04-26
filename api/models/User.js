@@ -1,8 +1,8 @@
 /**
  * Created by gabrielkunkel on 4/23/16 in JavaScript.
  */
-var bcrypt = require('bcrypt-nodejs');
 var mongoose = require('mongoose');
+var bcrypt = require('bcrypt-nodejs');
 
 
 var UserSchema = new mongoose.Schema({
@@ -10,14 +10,19 @@ var UserSchema = new mongoose.Schema({
   password: String
 });
 
-UserSchema.methods.toJSON = function () {
+UserSchema.methods.toJSON = function() {
   var user = this.toObject();
   delete user.password;
-  console.log(user);
+  console.log('toJSON method, user: ' + user);
   return user;
 };
 
-UserSchema.pre("save", function (next) {
+UserSchema.methods.comparePasswords = function (password, callback) {
+  bcrypt.compare(password, this.password, callback)
+
+};
+
+UserSchema.pre('save', function (next) {
   var user = this;
 
   if(!user.isModified('password')) return next();
@@ -37,4 +42,4 @@ UserSchema.pre("save", function (next) {
 
 });
 
-exports.model = mongoose.model("User", UserSchema);
+module.exports = mongoose.model("User", UserSchema);

@@ -21,6 +21,12 @@ angular
         controller: 'RegisterCtrl'
       })
 
+      .state('login', {
+        url: '/login',
+        templateUrl: '/views/login.html',
+        controller: 'LoginCtrl'
+      })
+
       .state('connections', {
         url: '/connections',
         templateUrl: '/views/connections.html',
