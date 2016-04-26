@@ -3,6 +3,7 @@
  */
 
 var express = require("express");
+var morgan = require('morgan');
 var bodyParser = require("body-parser");
 var mongoose = require('mongoose');
 var User = require('./models/User.js');
@@ -11,6 +12,8 @@ var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
 
 var app = express();
+
+app.use(morgan('combined'))
 
 app.use(bodyParser.json());
 app.use(passport.initialize());
@@ -115,6 +118,7 @@ function createSendToken(user, res) {
     });
 
 }
+
 
 // Use the token
 var loveConnections = [

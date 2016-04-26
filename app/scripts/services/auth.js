@@ -42,7 +42,5 @@ angular.module('angularJwtApp')
         .catch(authError);
     };
 
-
-
     // AngularJS will instantiate a singleton by calling "new" on this function
   });
