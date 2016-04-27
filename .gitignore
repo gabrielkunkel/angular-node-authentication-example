@@ -28,3 +28,4 @@ lib-cov
 build/Release
 node_modules
 .idea
+/api/config.js

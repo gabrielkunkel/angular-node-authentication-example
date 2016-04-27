@@ -12,7 +12,7 @@ var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
 var moment = require('moment');
 var request = require('request');
-
+var config = require('./config');
 
 
 var app = express();
@@ -116,7 +116,7 @@ app.post('/auth/google', function (req, res) {
     redirect_uri: req.body.redirectUri,
     code: req.body.code,
     grant_type: 'authorization_code',
-    client_secret: 'rOdhRZRLbxdMV9UIx6CkKQJl'
+    client_secret: config.GOOGLE_SECRET
   };
 
   request.post(url, {
@@ -161,7 +161,7 @@ function createSendToken(user, res) {
     exp: moment().add(10, 'days').unix()
   };
 
-  var token = jwt.encode(payload, "forbidden");
+  var token = jwt.encode(payload, config.TOKEN_SECRET);
 
     res.status(200).send({
       user: user.toJSON(),
@@ -184,7 +184,7 @@ var loveConnections = [
 
 app.get('/connections', function (req, res) {
   var token = req.headers.authorization.split(' ')[1];
-  var payload = jwt.decode(token, "forbidden");
+  var payload = jwt.decode(token, config.TOKEN_SECRET);
 
   if (!payload.sub) {
     res.status(401).send({
@@ -203,7 +203,7 @@ app.get('/connections', function (req, res) {
 
 
 
-mongoose.connect('mongodb://localhost/angjwt');
+mongoose.connect(config.MONGO_URI);
 
 var server = app.listen(3000, function () {
   console.log('api listening on ', server.address().port);
