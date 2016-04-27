@@ -41,6 +41,15 @@ angular.module('angularJwtApp')
       }).then(authSuccessful)
         .catch(authError);
     };
+/*
+    var urlBuilder = [];
+    var clientId = '175470426515-2q7t6uktktmtm7soenalod1vmt7jvh1e.apps.googleusercontent.com';
+
+    urlBuilder.push('response_type=code',
+      'client_id=' + clientId,
+      'redirect_uri=' + window.location.origin,
+      'scope=profile email');*/
+
 
     // AngularJS will instantiate a singleton by calling "new" on this function
   });

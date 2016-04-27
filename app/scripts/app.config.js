@@ -4,7 +4,11 @@
 'use strict';
 
 angular
-  .module('angularJwtApp').config(function ($urlRouterProvider, $stateProvider, $httpProvider) {
+  .module('angularJwtApp').config(function ($urlRouterProvider,
+                                            $stateProvider,
+                                            $httpProvider,
+                                            $authProvider,
+                                            API_URL) {
 
     $urlRouterProvider.otherwise('/');
 
@@ -39,6 +43,11 @@ angular
       })
 
     ;
+
+  $authProvider.google({
+    clientId: '175470426515-2q7t6uktktmtm7soenalod1vmt7jvh1e.apps.googleusercontent.com',
+    url: API_URL + 'auth/google'
+  });
 
   $httpProvider.interceptors.push('authInterceptor');
   

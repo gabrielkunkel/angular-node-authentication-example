@@ -10,5 +10,6 @@
  */
 angular
   .module('angularJwtApp', [
-    'ui.router'
+    'ui.router',
+    'satellizer'
   ]);

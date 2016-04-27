@@ -10,17 +10,18 @@ var User = require('./models/User.js');
 var jwt = require('jwt-simple');
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
+var moment = require('moment');
+
 
 var app = express();
 
-app.use(morgan('combined'))
+app.use(morgan('combined'));
 
 app.use(bodyParser.json());
 app.use(passport.initialize());
 
 passport.serializeUser(function (user, done) {
   done(null, user.id);
-
 });
 
 app.use(function (req, res, next) {
@@ -93,8 +94,8 @@ var registerStrategy = new LocalStrategy(strategyOptions, function (email, passw
 passport.use('local-register', registerStrategy);
 passport.use('local-login', loginStrategy);
 
-// Get the token
 
+// Get the token
 app.post('/register', passport.authenticate('local-register'), function (req, res) {
   createSendToken(req.user, res);
 });
@@ -106,8 +107,8 @@ app.post('/login', passport.authenticate('local-login'), function (req, res) {
 function createSendToken(user, res) {
 
   var payload = {
-    // iss: req.hostname,
-    sub: user.id
+    sub: user.id,
+    exp: moment().add(10, 'days').unix()
   };
 
   var token = jwt.encode(payload, "forbidden");
