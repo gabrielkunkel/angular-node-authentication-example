@@ -8,7 +8,7 @@
  * Controller of the angularJwtApp
  */
 angular.module('angularJwtApp')
-  .controller('LoginCtrl', function ($scope, $auth, auth, alert) {
+  .controller('LoginCtrl', function ($scope, $auth, $state, auth, alert) {
 
     $scope.submit = function () {
       auth.login($scope.email, $scope.password);
@@ -17,11 +17,12 @@ angular.module('angularJwtApp')
     $scope.authenticate = function (provider) {
       $auth.authenticate(provider).then(function (res) {
         alert('success', 'Welcome!', res.data.user.displayName + ', you\'re one of our favorites!');
+        $state.go('connections');
       }, handleError);
     };
 
     function handleError(err) {
-      alert('warning', 'Something went wrong: ', err.message);
+      console.log('Error: ' + err);
     }
 
 

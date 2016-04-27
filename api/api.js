@@ -11,6 +11,8 @@ var jwt = require('jwt-simple');
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
 var moment = require('moment');
+var request = require('request');
+
 
 
 var app = express();
@@ -104,6 +106,54 @@ app.post('/login', passport.authenticate('local-login'), function (req, res) {
      createSendToken(req.user, res);
   });
 
+app.post('/auth/google', function (req, res) {
+
+  var url = 'https://accounts.google.com/o/oauth2/token';
+  var apiUrl = 'https://www.googleapis.com/plus/v1/people/me/openIdConnect';
+
+  var params = {
+    client_id: req.body.clientId,
+    redirect_uri: req.body.redirectUri,
+    code: req.body.code,
+    grant_type: 'authorization_code',
+    client_secret: 'rOdhRZRLbxdMV9UIx6CkKQJl'
+  };
+
+  request.post(url, {
+      json: true,
+      form: params
+    }, function (err, response, token) {
+      var accessToken = token.access_token;
+      var headers = {
+        Authorization: 'Bearer ' + accessToken
+      };
+
+      request.get({
+        url: apiUrl,
+        headers: headers,
+        json: true
+      }, function (err, response, profile) {
+        User.findOne({
+          googleId: profile.sub
+        }, function (err, foundUser) {
+          if (foundUser) return createSendToken(foundUser, res);
+
+          var newUser = new User();
+          user.googleId = profile.sub;
+          user.displayName = profile.name;
+          user.save(function (err) {
+            if (err) return next(err);
+            createSendToken(newUser, res);
+
+          }); // end save
+        }); // end findOne
+      }); // end get
+
+    }
+  ); // end of request post
+
+}); // end of app post auth google
+
 function createSendToken(user, res) {
 
   var payload = {
@@ -150,6 +200,8 @@ app.get('/connections', function (req, res) {
 
   res.json(loveConnections);
 }); // end of app.get
+
+
 
 mongoose.connect('mongodb://localhost/angjwt');
 

@@ -7,7 +7,9 @@ var bcrypt = require('bcrypt-nodejs');
 
 var UserSchema = new mongoose.Schema({
   email: String,
-  password: String
+  password: String,
+  googleId: String,
+  displayName: String
 });
 
 UserSchema.methods.toJSON = function() {
@@ -19,7 +21,6 @@ UserSchema.methods.toJSON = function() {
 
 UserSchema.methods.comparePasswords = function (password, callback) {
   bcrypt.compare(password, this.password, callback)
-
 };
 
 UserSchema.pre('save', function (next) {
@@ -32,13 +33,11 @@ UserSchema.pre('save', function (next) {
 
     bcrypt.hash(user.password, salt, null, function (err, hash) {
       if (err) return next(err);
-
       user.password = hash;
       next();
+    });
 
-    })
-
-  })
+  });
 
 });
 
